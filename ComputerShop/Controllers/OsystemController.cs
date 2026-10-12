@@ -33,5 +33,59 @@ namespace ComputerShop.Controllers
 
             return StatusCode(400, new { message = "Sikeres felvétel", result = osystem });
         }
+
+        [HttpGet("allOsystems")]
+        public object GetAllOsystem()
+        {
+            var osystems = _context.Osystems.ToList();
+            Exception e= new();
+            if (osystems.Count > 0)
+            {
+                return StatusCode(200, new { message = "Sikeres lekérdezés", result = osystems });
+            }
+            else if(osystems.Count<1)
+            {
+                return StatusCode(200, new { message = "Üres tábla",result=osystems });
+            }
+            else
+            {
+                return StatusCode(400, new { message = "Hiba a lekérdezésben",result=e.Message });
+            }
+        }
+
+        [HttpPost("updateOsystem")]
+        public object UpdateOsystem([FromQuery]Guid id, [FromBody] UpdateOsystemDTO updateOsystemDto)
+        {
+            var osystem = _context.Osystems.FirstOrDefault(os => os.Id == id);
+
+            if (osystem != null)
+            {
+                osystem.Name = updateOsystemDto.Name;
+                osystem.Version = updateOsystemDto.Version;
+                osystem.UpdateTime = DateTime.Now;
+
+                _context.Osystems.Update(osystem);
+                _context.SaveChanges();
+                return StatusCode(200, new { message = "Sikeres módosítás", result = osystem });
+            }
+
+            return StatusCode(400, new { message = "Hiba a módosításban", result = osystem });
+        }
+
+        [HttpDelete("deleteOsystem")]
+
+        public object DeleteOsystem([FromQuery] Guid id)
+        {
+            var osystem = _context.Osystems.FirstOrDefault(os => os.Id == id);
+            if (osystem != null)
+            {
+                _context.Osystems.Remove(osystem);
+                _context.SaveChanges();
+                return StatusCode(200, new { message = "Sikeres törlés", result = osystem });
+            }
+            return StatusCode(400, new { message = "Hiba a törlésben", result = osystem });
+        }
+
+
     }
 }
