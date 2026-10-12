@@ -7,6 +7,8 @@ namespace ComputerShop
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddSwaggerGen();
+
             // Add services to the container.
 
             builder.Services.AddControllers();
@@ -19,6 +21,8 @@ namespace ComputerShop
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.MapSwagger();
+                app.MapSwaggerUI();
             }
 
             app.UseHttpsRedirection();
