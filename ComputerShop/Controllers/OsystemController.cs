@@ -2,6 +2,8 @@
 using ComputerShop.Models.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.EntityFrameworkCore;
 
 namespace ComputerShop.Controllers
 {
@@ -86,6 +88,29 @@ namespace ComputerShop.Controllers
             return StatusCode(400, new { message = "Hiba a törlésben", result = osystem });
         }
 
+        [HttpGet("allOsystemsWithComputers")]
 
+        public object GetAllOsystemWithComputers()
+        {
+            var osystems = _context.Osystems.Include(o=>o.Computers);
+
+            return StatusCode(200, new { message = "Sikeres lekérdezés", result = osystems });
+        }
+
+        [HttpGet("oneOsystemWithComputers")]
+        public object OneOsystemWithComputers([FromQuery]Guid id)
+        {
+            var osystem=_context.Osystems.SingleOrDefault(o=> o.Id == id);
+
+            var os = _context.Osystems.Where(os=>os.Id==id).Join(_context.Computers, o => o.Id, c => c.OsId, (o, c) => new { o.Name, o.Version, c.Brand, c.Type });
+            if (osystem != null)
+            {
+                return StatusCode(200, new { message = "Sikeres lekérdezés", result = os });
+                //var computers = _context.Computers.Where(c => c.OsId == osystem.Id);
+
+                //return StatusCode(200, new { message = "Sikeres lekérdezés", result = new { osystem.Name, computers } });
+            }
+            return StatusCode(404, new { message = "Nincs ilyen Id-vel osystem", result = osystem });
+        }
     }
 }

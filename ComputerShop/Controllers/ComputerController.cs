@@ -2,6 +2,7 @@
 using ComputerShop.Models.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ComputerShop.Controllers
 {
@@ -99,6 +100,15 @@ namespace ComputerShop.Controllers
                 return StatusCode(200, new { message = "Sikeres lekérdezés", result = computer });
             }
             return StatusCode(400, new { message = "Hiba a lekérdezésben", result = computer });
+        }
+
+        [HttpGet("allOsystemsWithComputers")]
+
+        public object GetAllOsystemWithComputers()
+        {
+            var osystems = _context.Osystems.Include(o => o.Computers);
+
+            return StatusCode(200, new { message = "Sikeres lekérdezés", result = osystems });
         }
     }
 }
