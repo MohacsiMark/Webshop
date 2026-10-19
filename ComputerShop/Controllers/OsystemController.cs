@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerShop.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("osystem")]
     [ApiController]
     public class OsystemController : ControllerBase
     {
